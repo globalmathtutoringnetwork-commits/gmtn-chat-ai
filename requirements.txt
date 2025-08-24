@@ -10,7 +10,7 @@ openai
 #Anthropic integration
 langchain-anthropic
 
-#Google gemini (PaLM) Integration
+#Google services
 langchain-google-genai
 google-generativeai
 
