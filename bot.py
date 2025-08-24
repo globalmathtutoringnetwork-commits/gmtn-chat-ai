@@ -12,8 +12,8 @@ st.markdown(
     """
     <style>
         .block-container {
-            padding-top: 1.7rem;
-            padding-bottom: 0.5rem;
+            padding-top: 3rem;
+            padding-bottom: 2rem;
         }
         h2 {
             margin-top: 0rem;
@@ -21,8 +21,6 @@ st.markdown(
             display: flex;
             gap: 10px;
         }
-     
-       
     </style>
     """,
     unsafe_allow_html=True
@@ -30,14 +28,38 @@ st.markdown(
 
 st.markdown(
     """
-    <h2>
-        <img src="https://global-math-tutoring-network.netlify.app/globalmath.svg" 
-             alt="GMTN Logo" width="40">
+    <style>
+        .gmt-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap;   
+            font-size: 1.6em;       
+            font-weight: 700;
+        }
+        .gmt-logo {
+            height: 45px;   /* default */
+            width: auto;
+        }
+        @media (max-width: 600px) {
+            .gmt-logo {
+                height: 50px;  /* slightly bigger on mobile */
+            }
+            .gmt-header {
+                font-size: 1.4em; /* slightly smaller text */
+            }
+        }
+    </style>
+
+    <div class="gmt-header">
+        <img src="https://global-math-tutoring-network.netlify.app/globalmath.svg"
+             alt="GMTN Logo" class="gmt-logo">
         GMTN AI Assistant
-    </h2>
+    </div>
     """,
     unsafe_allow_html=True
 )
+
 
 st.caption(
     "Get instant answers about **Global Math Tutoring Network (GMTN)**. "
