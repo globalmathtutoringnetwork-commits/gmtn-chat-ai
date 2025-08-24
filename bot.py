@@ -6,12 +6,13 @@ import traceback
 from constants import SYSTEM_PROMPT, WELCOME, GMTN_LOGO, EMAIL, WEBSITE_URL, INSTAGRAM, GMTN_NAME
 
 # ----------------------------
-# Setup Gemini API
+# Setup Model API
 # ----------------------------
 load_dotenv()
 api_key = os.getenv("SECRET_KEY") or st.secrets["SECRET_KEY"]
+model_name=os.getenv("MODEL_NAME") or st.secrets["MODEL_NAME"]
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel("gemini-2.5-flash-lite")
+model = genai.GenerativeModel(model_name)
 
 # ----------------------------
 # Functions
@@ -74,15 +75,15 @@ def render_chat_history():
             st.markdown(msg["parts"][0], unsafe_allow_html=True)
 
 
-def send_message_to_gemini(prompt: str) -> str:
+def send_message_to_model(prompt: str) -> str:
     try:
-        gemini_history = [
+        chat_history = [
             {"role": "user" if m["role"] == "user" else "model", "parts": m["parts"]}
             for m in st.session_state.messages
         ]
-        convo = model.start_chat(history=gemini_history)
-        gemini_reply = convo.send_message(SYSTEM_PROMPT + "\n\n" + prompt)
-        return gemini_reply.text.strip()
+        convo = model.start_chat(history=chat_history)
+        model_reply = convo.send_message(SYSTEM_PROMPT + "\n\n" + prompt)
+        return model_reply.text.strip()
     except Exception:
         traceback.print_exc()
         st.markdown(
@@ -124,7 +125,7 @@ if user_prompt:
     # Show assistant response
     with st.chat_message("assistant", avatar=GMTN_LOGO):
         with st.spinner("Isha is thinking... 🤔"):
-            reply = send_message_to_gemini(user_prompt)
+            reply = send_message_to_model(user_prompt)
 
         st.markdown(reply.replace("\n", "<br>"), unsafe_allow_html=True)
     st.session_state.messages.append({"role": "assistant", "parts": [reply]})
