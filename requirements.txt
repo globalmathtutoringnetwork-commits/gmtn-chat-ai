@@ -29,6 +29,5 @@ scikit-learn
 #For prompt UI 
 streamlit
 
-
-
-
+gspread
+oauth2client
