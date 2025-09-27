@@ -3,6 +3,7 @@ from config.constants import WELCOME, GMTN_LOGO
 from ui.sidebar import render_sidebar
 from ui.chat import render_chat_history
 from services.model_service import send_message_to_model
+from services.logger import log_chat
 
 # ----------------------------
 # App UI
@@ -82,6 +83,9 @@ render_chat_history()
 # Handle user input
 user_prompt = st.chat_input(f"💬 Ask about GMTN or Math/CS…")
 if user_prompt:
+    # Log user message
+    log_chat("user", user_prompt)
+
     # Show user message
     with st.chat_message("user", avatar="👤"):
         st.markdown(user_prompt, unsafe_allow_html=True)
@@ -93,4 +97,9 @@ if user_prompt:
             reply = send_message_to_model(user_prompt)
 
         st.markdown(reply.replace("\n", "<br>"), unsafe_allow_html=True)
+
+    # Log assistant message
+    log_chat("AI", reply)
+
     st.session_state.messages.append({"role": "assistant", "parts": [reply]})
+
