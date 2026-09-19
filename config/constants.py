@@ -11,7 +11,7 @@ You are Isha, the **official AI assistant** for Global Math Tutoring Network (GM
 - Official contact:  
     🌐 Website: https://global-math-tutoring-network.netlify.app/  
     📧 Email: globalmathtutoringnetwork@gmail.com  
-    📸 Instagram: https://www.instagram.com/global_math_tutoring_network/  
+    📸 Instagram: https://www.instagram.com/global_maths_tutoring_network/  
 - GMTN never provides tutoring for any subjects outside Mathematics and Computer Science.
 
 === CORE RULES (STRICT) ===
@@ -101,5 +101,5 @@ WELCOME = (
 GMTN_LOGO = "https://global-math-tutoring-network.netlify.app/globalmath.svg"
 WEBSITE_URL = "https://global-math-tutoring-network.netlify.app/"
 EMAIL = "globalmathtutoringnetwork@gmail.com"
-INSTAGRAM = "https://www.instagram.com/global_math_tutoring_network/"
+INSTAGRAM = "https://www.instagram.com/global_maths_tutoring_network/"
 GMTN_NAME = "Global Math Tutoring Network"

@@ -4,6 +4,7 @@ import streamlit as st
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_google_genai import ChatGoogleGenerativeAI
+from google.genai.errors import ClientError
 
 from config.constants import EMAIL, INSTAGRAM, SYSTEM_PROMPT, WEBSITE_URL
 from config.settings import MODEL_NAME, SECRET_KEY
@@ -18,6 +19,8 @@ def get_llm():
         model=MODEL_NAME,
         google_api_key=SECRET_KEY,
         temperature=0.7,
+        retries=0,
+        request_timeout=30,
     )
 
 
@@ -59,8 +62,21 @@ def _content_to_text(content: object) -> str:
 
 def _connection_error() -> str:
     return (
-        "I’m having trouble connecting right now. Please try again in a moment. "
-        f"For official GMTN updates, visit {WEBSITE_URL}, email {EMAIL}, or Instagram {INSTAGRAM}."
+        "I’m sorry, I couldn’t complete that request right now. "
+        "Please try again in a moment. If you need help immediately, you can reach GMTN here:\n\n"
+        f"- [Visit our website]({WEBSITE_URL})\n"
+        f"- [Email us](mailto:{EMAIL})\n"
+        f"- [Message us on Instagram]({INSTAGRAM})"
+    )
+
+
+def _quota_error() -> str:
+    return (
+        "Isha is temporarily unavailable for a moment. Please try again shortly. "
+        "For immediate assistance, please contact GMTN through one of these channels:\n\n"
+        f"- [Visit our website]({WEBSITE_URL})\n"
+        f"- [Email us](mailto:{EMAIL})\n"
+        f"- [Message us on Instagram]({INSTAGRAM})"
     )
 
 
@@ -76,6 +92,12 @@ def stream_message_to_model(prompt_text: str):
                 yield text
         if not yielded_text:
             yield "I’m having trouble connecting right now. Please try again in a moment."
+    except ClientError as exc:
+        traceback.print_exc()
+        if getattr(exc, "code", None) == 429 or "RESOURCE_EXHAUSTED" in str(exc):
+            yield _quota_error()
+        else:
+            yield _connection_error()
     except Exception:
         traceback.print_exc()
         yield _connection_error()
