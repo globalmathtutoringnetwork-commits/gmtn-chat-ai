@@ -732,7 +732,6 @@ def reset_empty_state_scroll() -> None:
         unsafe_allow_html=True,
     )
 
-
 def hide_welcome_during_generation() -> None:
     st.markdown(
         """
@@ -751,7 +750,6 @@ def hide_welcome_during_generation() -> None:
         """,
         unsafe_allow_html=True,
     )
-
 
 def submit_prompt(prompt: str) -> None:
     text = (prompt or "").strip()
