@@ -14,6 +14,28 @@ def render_sidebar() -> None:
                 border-right: 1px solid rgba(164, 190, 220, 0.14);
             }
 
+            section[data-testid="stSidebar"] [data-testid="stSidebarContent"] {
+                padding-top: 0 !important;
+            }
+
+            section[data-testid="stSidebar"] [data-testid="stSidebarHeader"] {
+                height: 0 !important;
+                min-height: 0 !important;
+                padding: 0 !important;
+            }
+
+            section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] {
+                margin-top: -16px !important;
+                padding-top: 0 !important;
+            }
+
+            section[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] {
+                position: absolute !important;
+                top: 8px !important;
+                right: 8px !important;
+                z-index: 2;
+            }
+
             div[data-testid="stSidebarNav"] {
                 padding-top: 0.3rem;
             }
@@ -22,7 +44,8 @@ def render_sidebar() -> None:
                 display: flex;
                 align-items: center;
                 gap: 0.7rem;
-                padding: 0.45rem 0 1.15rem 0;
+                margin-top: -16px;
+                padding: 0 0 1.15rem 0;
                 border-bottom: 1px solid rgba(164, 190, 220, 0.12);
             }
 

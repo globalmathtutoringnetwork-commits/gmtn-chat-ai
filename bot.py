@@ -264,7 +264,7 @@ def inject_global_styles() -> None:
             [data-testid="stHeader"] { background: transparent; }
             .main .block-container {
                 max-width: 1180px;
-                padding: 0.45rem 2.4rem 6.5rem !important;
+                padding: 0 2.4rem 6.5rem !important;
             }
 
             [data-testid="stSidebar"] {
@@ -453,7 +453,7 @@ def inject_global_styles() -> None:
             .main .block-container { position: relative; overflow: hidden; }
             .block-container {
                 max-width: 1180px !important;
-                padding: 0.45rem 2.4rem 6.5rem !important;
+                padding: 0 2.4rem 6.5rem !important;
             }
 
             .gmt-ambient {
@@ -702,6 +702,97 @@ def inject_global_styles() -> None:
                 button[aria-label="How can I book a demo session?"],
                 button[aria-label="Which course is right for my child?"] { min-height: 39px !important; }
                 .gmt-suggestions-label { margin-bottom: 0.3rem; }
+            }
+
+            /* Keep the empty state and composer within one viewport. */
+            .main .block-container,
+            .block-container {
+                padding-top: 0 !important;
+                padding-bottom: 0.4rem !important;
+            }
+
+            .gmt-empty-state {
+                margin-top: 0.2rem !important;
+            }
+
+            .gmt-identity-orbit {
+                width: 72px;
+                height: 72px;
+                margin-bottom: 0.45rem;
+            }
+
+            .gmt-empty-logo {
+                width: 58px;
+                height: 58px;
+                border-radius: 18px;
+            }
+
+            .gmt-empty-logo img {
+                width: 36px;
+                height: 36px;
+            }
+
+            .gmt-empty-title {
+                font-size: clamp(2.2rem, 4vw, 3.3rem);
+            }
+
+            .gmt-empty-subtitle {
+                margin-bottom: 0.45rem;
+            }
+
+            .gmt-greeting {
+                font-size: 1.05rem;
+            }
+
+            .gmt-empty-copy {
+                margin-bottom: 0.45rem;
+                font-size: 0.88rem;
+                line-height: 1.4;
+            }
+
+            .gmt-capability-row {
+                margin-bottom: 0.55rem;
+            }
+
+            div[data-testid="stForm"] {
+                margin-bottom: 0.55rem;
+                padding: 0.3rem;
+                background: rgba(20, 42, 65, 0.5);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+            }
+
+            div[data-testid="stForm"] input {
+                min-height: 36px;
+            }
+
+            div[data-testid="stFormSubmitButton"] button {
+                min-height: 34px;
+            }
+
+            .gmt-suggestions-label {
+                margin-bottom: 0.35rem;
+            }
+
+            button[aria-label="What Math courses do you offer?"],
+            button[aria-label="Tell me about your Computer Science courses"],
+            button[aria-label="How can I book a demo session?"],
+            button[aria-label="Which course is right for my child?"] {
+                min-height: 46px !important;
+                border-radius: 12px !important;
+                background: rgba(255, 255, 255, 0.045) !important;
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+            }
+
+            .stChatInput {
+                background: rgba(13, 32, 52, 0.72);
+                backdrop-filter: blur(18px);
+                -webkit-backdrop-filter: blur(18px);
+            }
+
+            body:has(.gmt-empty-state) section.stMain {
+                overflow-y: hidden !important;
             }
         </style>
         """,
