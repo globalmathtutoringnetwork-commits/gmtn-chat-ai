@@ -1,7 +1,7 @@
 import streamlit as st
 
 from config.constants import GMTN_LOGO
-from services.logger import log_chat
+from services.logger import log_chat_async
 from services.model_service import stream_message_to_model
 from ui.chat import render_chat_history, render_empty_state
 from ui.sidebar import render_sidebar
@@ -762,7 +762,7 @@ def submit_prompt(prompt: str) -> None:
     st.session_state.messages.append({"role": "user", "parts": [text]})
     user_name = st.session_state.get("user_name", "").strip()
     logged_text = f"[{user_name}] {text}" if user_name else text
-    log_chat("user", logged_text)
+    log_chat_async("user", logged_text)
 
     with st.chat_message("user", avatar="👤"):
         st.markdown(text)
@@ -785,7 +785,7 @@ def submit_prompt(prompt: str) -> None:
         "I’m having trouble connecting right now. Please try again in a moment."
     )
     st.session_state.messages.append({"role": "assistant", "parts": [clean_reply]})
-    log_chat("AI", clean_reply)
+    log_chat_async("AI", clean_reply)
 
 
 st.set_page_config(

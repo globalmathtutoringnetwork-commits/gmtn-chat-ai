@@ -19,6 +19,24 @@ def get_llm():
         model=MODEL_NAME,
         google_api_key=SECRET_KEY,
         temperature=0.7,
+        max_tokens=512,
+        thinking_level="minimal",
+        retries=0,
+        request_timeout=30,
+    )
+
+
+@st.cache_resource
+def get_fallback_llm():
+    if not SECRET_KEY:
+        raise ValueError("Missing SECRET_KEY for Gemini access.")
+
+    return ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash",
+        google_api_key=SECRET_KEY,
+        temperature=0.7,
+        max_tokens=512,
+        thinking_budget=0,
         retries=0,
         request_timeout=30,
     )
@@ -36,6 +54,11 @@ prompt = ChatPromptTemplate.from_messages(
 @st.cache_resource
 def get_chain():
     return prompt | get_llm()
+
+
+@st.cache_resource
+def get_fallback_chain():
+    return prompt | get_fallback_llm()
 
 
 def _get_history() -> list[HumanMessage | AIMessage]:
@@ -81,11 +104,10 @@ def _quota_error() -> str:
 
 
 def stream_message_to_model(prompt_text: str):
+    request = {"input": prompt_text, "history": _get_history()}
     try:
         yielded_text = False
-        for chunk in get_chain().stream(
-            {"input": prompt_text, "history": _get_history()}
-        ):
+        for chunk in get_chain().stream(request):
             text = _content_to_text(getattr(chunk, "content", chunk))
             if text:
                 yielded_text = True
@@ -95,7 +117,14 @@ def stream_message_to_model(prompt_text: str):
     except ClientError as exc:
         traceback.print_exc()
         if getattr(exc, "code", None) == 429 or "RESOURCE_EXHAUSTED" in str(exc):
-            yield _quota_error()
+            try:
+                for chunk in get_fallback_chain().stream(request):
+                    text = _content_to_text(getattr(chunk, "content", chunk))
+                    if text:
+                        yield text
+            except Exception:
+                traceback.print_exc()
+                yield _quota_error()
         else:
             yield _connection_error()
     except Exception:

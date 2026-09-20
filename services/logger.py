@@ -1,5 +1,6 @@
 import os
 import json
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 import streamlit as st
 import gspread
@@ -16,6 +17,7 @@ SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/au
 # Lazy initialization
 # -------------------------------
 sheet = None
+_log_executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="gmtn-chat-log")
 
 def init_sheet():
     """
@@ -78,3 +80,8 @@ def log_chat(role: str, message: str):
         sheet.append_row([timestamp, role, message])
     except Exception as e:
         print(f"[Logger Error] Could not append row to Google Sheet: {e}")
+
+
+def log_chat_async(role: str, message: str) -> None:
+    """Queue logging so Google Sheets latency never blocks a chat response."""
+    _log_executor.submit(log_chat, role, message)
