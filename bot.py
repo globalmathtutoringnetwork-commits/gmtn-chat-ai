@@ -800,6 +800,240 @@ def inject_global_styles() -> None:
     )
 
 
+def inject_background_scene() -> None:
+    st.markdown(
+        f"""
+        <style>
+            .gmt-bg-scene {{
+                position: fixed;
+                inset: 0;
+                z-index: 0;
+                overflow: hidden;
+                pointer-events: none;
+                background:
+                    radial-gradient(circle at 50% 42%, rgba(43, 106, 157, 0.15), transparent 34%),
+                    radial-gradient(circle at 12% 18%, rgba(212, 175, 55, 0.08), transparent 22%),
+                    linear-gradient(135deg, rgba(7, 17, 31, 0.1), rgba(3, 10, 20, 0.28));
+            }}
+
+            .gmt-bg-logo {{
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                width: min(70vw, 920px);
+                height: auto;
+                transform: translate(-50%, -50%);
+                background-image: url("{GMTN_LOGO}");
+                background-repeat: no-repeat;
+                background-size: contain;
+                opacity: 0.085;
+                filter: grayscale(0.25) saturate(0.7) contrast(0.9);
+                mix-blend-mode: screen;
+                animation: gmt-logo-breathe 12s ease-in-out infinite;
+            }}
+
+            .gmt-bg-orbit {{
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                width: min(74vw, 980px);
+                height: min(28vw, 360px);
+                border: 1px solid rgba(109, 184, 255, 0.2);
+                border-radius: 50%;
+                transform: translate(-50%, -50%) rotate(-17deg);
+                box-shadow: 0 0 42px rgba(109, 184, 255, 0.1);
+                animation: gmt-orbit-spin 24s linear infinite;
+            }}
+
+            .gmt-bg-orbit::after {{
+                content: "";
+                position: absolute;
+                left: 18%;
+                top: -4px;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #d4af37;
+                box-shadow: 0 0 18px rgba(212, 175, 55, 0.9);
+            }}
+
+            .gmt-bg-orbit-two {{
+                width: min(58vw, 760px);
+                height: min(21vw, 270px);
+                transform: translate(-50%, -50%) rotate(32deg);
+                border-color: rgba(212, 175, 55, 0.1);
+                animation-duration: 31s;
+                animation-direction: reverse;
+            }}
+
+            .gmt-bg-orbit-two::after {{
+                left: auto;
+                right: 22%;
+                background: #8ecbff;
+                box-shadow: 0 0 18px rgba(142, 203, 255, 0.9);
+            }}
+
+            .gmt-bg-stars,
+            .gmt-bg-stars::before,
+            .gmt-bg-stars::after {{
+                position: absolute;
+                display: block;
+                width: 2px;
+                height: 2px;
+                border-radius: 50%;
+                background: rgba(225, 239, 255, 0.8);
+                box-shadow:
+                    8vw 12vh rgba(225, 239, 255, 0.42),
+                    18vw 68vh rgba(212, 175, 55, 0.5),
+                    29vw 26vh rgba(225, 239, 255, 0.32),
+                    42vw 82vh rgba(225, 239, 255, 0.44),
+                    56vw 18vh rgba(212, 175, 55, 0.46),
+                    67vw 72vh rgba(225, 239, 255, 0.35),
+                    78vw 34vh rgba(225, 239, 255, 0.5),
+                    91vw 14vh rgba(212, 175, 55, 0.42),
+                    88vw 86vh rgba(225, 239, 255, 0.34),
+                    12vw 92vh rgba(225, 239, 255, 0.38);
+                content: "";
+                animation: gmt-stars-drift 18s linear infinite;
+            }}
+
+            .gmt-bg-stars {{
+                left: 0;
+                top: 0;
+                opacity: 0.58;
+            }}
+
+            .gmt-bg-stars::before {{
+                left: 17vw;
+                top: 31vh;
+                opacity: 0.45;
+                transform: scale(0.65);
+                animation-duration: 25s;
+                animation-delay: -8s;
+            }}
+
+            .gmt-bg-stars::after {{
+                left: 8vw;
+                top: 74vh;
+                opacity: 0.34;
+                transform: scale(1.35);
+                animation-duration: 31s;
+                animation-delay: -15s;
+            }}
+
+            .gmt-bg-operator {{
+                position: absolute;
+                color: rgba(145, 198, 239, 0.3);
+                font-family: Georgia, serif;
+                font-size: clamp(1.2rem, 2vw, 2rem);
+                letter-spacing: 0.04em;
+                text-shadow: 0 0 22px rgba(109, 184, 255, 0.36);
+                animation: gmt-operator-float 16s ease-in-out infinite alternate;
+            }}
+
+            .gmt-bg-operator-one {{ left: 8%; top: 24%; animation-delay: -3s; }}
+            .gmt-bg-operator-two {{ left: 17%; top: 76%; font-size: 1rem; animation-delay: -11s; }}
+            .gmt-bg-operator-three {{ right: 10%; top: 22%; color: rgba(212, 175, 55, 0.34); animation-delay: -7s; }}
+            .gmt-bg-operator-four {{ right: 16%; top: 72%; font-family: 'Courier New', monospace; font-size: 0.82rem; animation-delay: -13s; }}
+            .gmt-bg-operator-five {{ left: 43%; top: 12%; font-size: 0.9rem; animation-delay: -5s; }}
+            .gmt-bg-operator-six {{ left: 70%; top: 52%; font-family: 'Courier New', monospace; font-size: 0.75rem; animation-delay: -9s; }}
+            .gmt-bg-operator-seven {{ left: 31%; top: 87%; color: rgba(212, 175, 55, 0.38); animation-delay: -2s; }}
+            .gmt-bg-operator-eight {{ right: 29%; top: 8%; font-family: 'Courier New', monospace; font-size: 0.72rem; animation-delay: -14s; }}
+            .gmt-bg-operator-nine {{ left: 4%; top: 52%; font-size: 1.25rem; animation-delay: -6s; }}
+            .gmt-bg-operator-ten {{ right: 3%; top: 46%; color: rgba(212, 175, 55, 0.32); font-size: 1.15rem; animation-delay: -10s; }}
+
+            .gmt-bg-rail {{
+                position: absolute;
+                height: 1px;
+                width: 31vw;
+                background: linear-gradient(90deg, transparent, rgba(109, 184, 255, 0.16), transparent);
+                transform: rotate(-18deg);
+                animation: gmt-rail-shift 20s ease-in-out infinite alternate;
+            }}
+
+            .gmt-bg-rail-one {{ left: -5vw; top: 35%; }}
+            .gmt-bg-rail-two {{ right: -5vw; top: 64%; transform: rotate(21deg); animation-delay: -8s; }}
+
+            .gmt-ambient {{ display: none !important; }}
+
+            [data-testid="stAppViewContainer"] > .main,
+            [data-testid="stSidebar"] {{
+                position: relative;
+                z-index: 1;
+            }}
+
+            @keyframes gmt-logo-breathe {{
+                0%, 100% {{ opacity: 0.032; transform: translate(-50%, -50%) scale(0.98); }}
+                50% {{ opacity: 0.06; transform: translate(-50%, -50%) scale(1.02); }}
+            }}
+
+            @keyframes gmt-stars-drift {{
+                from {{ opacity: 0.28; transform: translate3d(-1vw, 1vh, 0); }}
+                to {{ opacity: 0.8; transform: translate3d(2vw, -2vh, 0); }}
+            }}
+
+            @keyframes gmt-operator-float {{
+                from {{ transform: translate3d(-8px, 5px, 0) rotate(-5deg); }}
+                to {{ transform: translate3d(12px, -12px, 0) rotate(5deg); }}
+            }}
+
+            @keyframes gmt-rail-shift {{
+                from {{ opacity: 0.25; transform: translateX(-2vw) rotate(-18deg); }}
+                to {{ opacity: 0.7; transform: translateX(5vw) rotate(-14deg); }}
+            }}
+
+            @keyframes gmt-orbit-spin {{
+                from {{ transform: translate(-50%, -50%) rotate(-17deg); }}
+                to {{ transform: translate(-50%, -50%) rotate(343deg); }}
+            }}
+
+            @media (max-width: 768px) {{
+                .gmt-bg-logo {{ width: 96vw; opacity: 0.055; }}
+                .gmt-bg-orbit {{ width: 112vw; height: 42vw; }}
+                .gmt-bg-orbit-two {{ width: 92vw; height: 34vw; }}
+                .gmt-bg-operator {{ font-size: 1rem; }}
+                .gmt-bg-operator-one {{ left: 4%; top: 22%; }}
+                .gmt-bg-operator-three {{ right: 4%; top: 28%; }}
+                .gmt-bg-operator-four {{ right: 5%; top: 76%; }}
+                .gmt-bg-operator-eight {{ right: 4%; top: 12%; }}
+                .gmt-bg-operator-nine {{ left: 2%; top: 55%; }}
+                .gmt-bg-operator-ten {{ right: 2%; top: 50%; }}
+            }}
+
+            @media (prefers-reduced-motion: reduce) {{
+                .gmt-bg-logo,
+                .gmt-bg-orbit,
+                .gmt-bg-orbit-two,
+                .gmt-bg-stars,
+                .gmt-bg-stars::before,
+                .gmt-bg-stars::after,
+                .gmt-bg-operator,
+                .gmt-bg-rail {{ animation: none !important; }}
+            }}
+        </style>
+        <div class="gmt-bg-scene" aria-hidden="true">
+            <div class="gmt-bg-logo"></div>
+            <div class="gmt-bg-orbit"></div>
+            <div class="gmt-bg-orbit gmt-bg-orbit-two"></div>
+            <div class="gmt-bg-stars"></div>
+            <span class="gmt-bg-operator gmt-bg-operator-one">∑ f(x)</span>
+            <span class="gmt-bg-operator gmt-bg-operator-two">∫ dy</span>
+            <span class="gmt-bg-operator gmt-bg-operator-three">π · ∞</span>
+            <span class="gmt-bg-operator gmt-bg-operator-four">&lt;/&gt; 0101</span>
+            <span class="gmt-bg-operator gmt-bg-operator-five">x² + y²</span>
+            <span class="gmt-bg-operator gmt-bg-operator-six">f(x) → ∂y</span>
+            <span class="gmt-bg-operator gmt-bg-operator-seven">Δt · ∇</span>
+            <span class="gmt-bg-operator gmt-bg-operator-eight">{{ a² + b² }}</span>
+            <span class="gmt-bg-operator gmt-bg-operator-nine">∞</span>
+            <span class="gmt-bg-operator gmt-bg-operator-ten">Σ 01</span>
+            <span class="gmt-bg-rail gmt-bg-rail-one"></span>
+            <span class="gmt-bg-rail gmt-bg-rail-two"></span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def reset_chat() -> None:
     st.session_state.messages = []
     st.session_state.pending_prompt = None
@@ -887,6 +1121,7 @@ st.set_page_config(
 )
 
 inject_global_styles()
+inject_background_scene()
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
