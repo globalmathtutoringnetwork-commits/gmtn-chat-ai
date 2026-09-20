@@ -1,10 +1,7 @@
 import os
-import json
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 import streamlit as st
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 
 # -------------------------------
 # Configuration
@@ -27,6 +24,13 @@ def init_sheet():
     global sheet
     if sheet is not None:
         return sheet
+
+    try:
+        import gspread
+        from oauth2client.service_account import ServiceAccountCredentials
+    except ImportError as exc:
+        print(f"[Logger Warning] Google Sheets logging unavailable: {exc}")
+        return None
 
     creds = None
 
