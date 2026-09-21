@@ -1,5 +1,3 @@
-import traceback
-
 import streamlit as st
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -20,7 +18,6 @@ def get_llm():
         google_api_key=SECRET_KEY,
         temperature=0.7,
         max_tokens=512,
-        thinking_level="minimal",
         retries=0,
         request_timeout=30,
     )
@@ -36,7 +33,6 @@ def get_fallback_llm():
         google_api_key=SECRET_KEY,
         temperature=0.7,
         max_tokens=512,
-        thinking_budget=0,
         retries=0,
         request_timeout=30,
     )
@@ -103,33 +99,38 @@ def _quota_error() -> str:
     )
 
 
+def _stream_chain(chain, request):
+    yielded_text = False
+    for chunk in chain.stream(request):
+        text = _content_to_text(getattr(chunk, "content", chunk))
+        if text:
+            yielded_text = True
+            yield text
+
+    if not yielded_text:
+        raise RuntimeError("The model returned an empty response.")
+
+
 def stream_message_to_model(prompt_text: str):
     request = {"input": prompt_text, "history": _get_history()}
     try:
-        yielded_text = False
-        for chunk in get_chain().stream(request):
-            text = _content_to_text(getattr(chunk, "content", chunk))
-            if text:
-                yielded_text = True
-                yield text
-        if not yielded_text:
-            yield "I’m having trouble connecting right now. Please try again in a moment."
-    except ClientError as exc:
-        traceback.print_exc()
-        if getattr(exc, "code", None) == 429 or "RESOURCE_EXHAUSTED" in str(exc):
-            try:
-                for chunk in get_fallback_chain().stream(request):
-                    text = _content_to_text(getattr(chunk, "content", chunk))
-                    if text:
-                        yield text
-            except Exception:
-                traceback.print_exc()
-                yield _quota_error()
+        yield from _stream_chain(get_chain(), request)
+        return
+    except Exception as exc:
+        error_text = str(exc).replace("\n", " ")[:240]
+        print(f"[Model Warning] Primary model failed: {type(exc).__name__}: {error_text}")
+
+    try:
+        yield from _stream_chain(get_fallback_chain(), request)
+    except Exception as exc:
+        error_text = str(exc).replace("\n", " ")[:240]
+        print(f"[Model Error] Fallback model failed: {type(exc).__name__}: {error_text}")
+        if isinstance(exc, ClientError) and (
+            getattr(exc, "code", None) == 429 or "RESOURCE_EXHAUSTED" in str(exc)
+        ):
+            yield _quota_error()
         else:
             yield _connection_error()
-    except Exception:
-        traceback.print_exc()
-        yield _connection_error()
 
 
 def send_message_to_model(prompt_text: str) -> str:
