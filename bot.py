@@ -952,7 +952,7 @@ def inject_background_scene() -> None:
             }}
 
             .gmt-bg-rail-one {{ left: -5vw; top: 35%; }}
-            .gmt-bg-rail-two {{ right: -5vw; top: 64%; transform: rotate(21deg); animation-delay: -8s; }}
+            .gmt-bg-rail-two {{ right: -5vw; top: 64%; transform: rotate(21deg); animation-delay: -4s; }}
 
             .gmt-ambient {{ display: none !important; }}
 

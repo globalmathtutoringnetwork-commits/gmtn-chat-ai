@@ -1,6 +1,6 @@
 import streamlit as st
 
-from config.constants import GMTN_LOGO, EMAIL, WEBSITE_URL, INSTAGRAM, GMTN_NAME
+from config.constants import GMTN_LOGO, EMAIL, WEBSITE_URL, INSTAGRAM, GMTN_NAME, GOOGLE_MAPS, LINKEDIN, FACEBOOK
 
 
 def render_sidebar() -> None:
@@ -44,7 +44,7 @@ def render_sidebar() -> None:
                 display: flex;
                 align-items: center;
                 gap: 0.7rem;
-                margin-top: -16px;
+                margin-top: -1px;
                 padding: 0 0 1.15rem 0;
                 border-bottom: 1px solid rgba(164, 190, 220, 0.12);
             }
@@ -57,19 +57,11 @@ def render_sidebar() -> None:
             }
 
             .gmt-sidebar-brand-title {
-                font-size: 0.9rem;
+                font-size: 1.2rem;
                 font-weight: 700;
                 line-height: 1.25;
                 letter-spacing: -0.01em;
                 color: #f3f6fb;
-            }
-
-            .gmt-sidebar-brand-subtitle {
-                display: block;
-                margin-top: 0.2rem;
-                color: #8fa7be;
-                font-size: 0.7rem;
-                font-weight: 400;
             }
 
             .gmt-sidebar-label {
@@ -142,7 +134,6 @@ def render_sidebar() -> None:
             <img src="{GMTN_LOGO}" alt="GMTN logo" />
             <div>
                 <div class="gmt-sidebar-brand-title">{GMTN_NAME}</div>
-                <div class="gmt-sidebar-brand-subtitle">Isha · AI Learning Assistant</div>
             </div>
         </div>
         """,
@@ -163,9 +154,12 @@ def render_sidebar() -> None:
         st.markdown('<div class="gmt-sidebar-label">Explore GMTN</div>', unsafe_allow_html=True)
         with st.container():
             st.markdown('<div class="gmt-sidebar-actions">', unsafe_allow_html=True)
-            st.link_button("Web  Website", WEBSITE_URL, use_container_width=True)
-            st.link_button("Social  Instagram", INSTAGRAM, use_container_width=True)
-            st.link_button("Mail  Email", f"mailto:{EMAIL}", use_container_width=True)
+            st.link_button("Official Website", WEBSITE_URL, use_container_width=True)
+            st.link_button("Offline Location", GOOGLE_MAPS, use_container_width=True)
+            st.link_button("Official Linkedin", LINKEDIN, use_container_width=True)
+            st.link_button("Official Facebook", FACEBOOK, use_container_width=True)
+            st.link_button("Official Instagram", INSTAGRAM, use_container_width=True)
+            st.link_button("Official Email", f"mailto:{EMAIL}", use_container_width=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown(

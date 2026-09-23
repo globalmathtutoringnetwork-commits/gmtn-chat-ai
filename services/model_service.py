@@ -1,6 +1,7 @@
 import streamlit as st
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables import Runnable
 from langchain_google_genai import ChatGoogleGenerativeAI
 from google.genai.errors import ClientError
 
@@ -48,13 +49,10 @@ prompt = ChatPromptTemplate.from_messages(
 
 
 @st.cache_resource
-def get_chain():
-    return prompt | get_llm()
-
-
-@st.cache_resource
-def get_fallback_chain():
-    return prompt | get_fallback_llm()
+def get_chain() -> Runnable:
+    primary = prompt | get_llm()
+    fallback = prompt | get_fallback_llm()
+    return primary.with_fallbacks([fallback])
 
 
 def _get_history() -> list[HumanMessage | AIMessage]:
@@ -99,32 +97,21 @@ def _quota_error() -> str:
     )
 
 
-def _stream_chain(chain, request):
-    yielded_text = False
-    for chunk in chain.stream(request):
-        text = _content_to_text(getattr(chunk, "content", chunk))
-        if text:
-            yielded_text = True
-            yield text
-
-    if not yielded_text:
-        raise RuntimeError("The model returned an empty response.")
-
-
 def stream_message_to_model(prompt_text: str):
     request = {"input": prompt_text, "history": _get_history()}
     try:
-        yield from _stream_chain(get_chain(), request)
-        return
-    except Exception as exc:
-        error_text = str(exc).replace("\n", " ")[:240]
-        print(f"[Model Warning] Primary model failed: {type(exc).__name__}: {error_text}")
+        yielded_text = False
+        for chunk in get_chain().stream(request):
+            text = _content_to_text(getattr(chunk, "content", chunk))
+            if text:
+                yielded_text = True
+                yield text
 
-    try:
-        yield from _stream_chain(get_fallback_chain(), request)
+        if not yielded_text:
+            raise RuntimeError("The model returned an empty response.")
     except Exception as exc:
         error_text = str(exc).replace("\n", " ")[:240]
-        print(f"[Model Error] Fallback model failed: {type(exc).__name__}: {error_text}")
+        print(f"[Model Error] Resilient chain failed: {type(exc).__name__}: {error_text}")
         if isinstance(exc, ClientError) and (
             getattr(exc, "code", None) == 429 or "RESOURCE_EXHAUSTED" in str(exc)
         ):

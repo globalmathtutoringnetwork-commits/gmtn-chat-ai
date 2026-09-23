@@ -61,16 +61,16 @@ def render_empty_state() -> None:
         unsafe_allow_html=True,
     )
 
-    if not name:
-        with st.form("isha_name_form", clear_on_submit=False):
-            name_input = st.text_input(
-                "What should I call you?",
-                placeholder="What should I call you? (optional)",
-                label_visibility="collapsed",
-            )
-            if st.form_submit_button("Continue  →", use_container_width=False):
-                st.session_state.user_name = name_input.strip()
-                st.rerun()
+    # if not name:
+    #     with st.form("isha_name_form", clear_on_submit=False):
+    #         name_input = st.text_input(
+    #             "What should I call you?",
+    #             placeholder="What should I call you? (optional)",
+    #             label_visibility="collapsed",
+    #         )
+    #         if st.form_submit_button("Continue  →", use_container_width=False):
+    #             st.session_state.user_name = name_input.strip()
+    #             st.rerun()
 
     suggestions = [
         "What Math courses do you offer?",
