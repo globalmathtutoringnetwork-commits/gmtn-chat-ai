@@ -501,6 +501,7 @@ def inject_global_styles() -> None:
                 position: relative;
                 width: 92px;
                 height: 92px;
+                --gmt-orbit-radius: 46px;
                 margin: 0 auto 1rem;
                 display: grid;
                 place-items: center;
@@ -511,33 +512,69 @@ def inject_global_styles() -> None:
                 inset: 0;
                 border: 1px solid rgba(109, 184, 255, 0.3);
                 border-radius: 50%;
-                box-shadow: 0 0 30px rgba(109, 184, 255, 0.08);
+                box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.12), 0 0 30px rgba(109, 184, 255, 0.1), 0 0 46px rgba(212, 175, 55, 0.04);
                 animation: gmt-breathe 4.5s ease-in-out infinite;
+            }
+
+            .gmt-orbit-ring::before {
+                content: "";
+                position: absolute;
+                inset: -1px;
+                border: 1px solid transparent;
+                border-top-color: rgba(212, 175, 55, 0.78);
+                border-right-color: rgba(142, 203, 255, 0.7);
+                border-radius: 50%;
+                transform: rotate(-32deg);
+                animation: gmt-ring-sweep 8s linear infinite;
             }
 
             .gmt-orbit-ring::after {
                 content: "";
                 position: absolute;
+                top: 50%;
+                left: 50%;
                 width: 5px;
                 height: 5px;
-                top: 8px;
-                right: 13px;
+                margin: -2.5px;
                 border-radius: 50%;
-                background: var(--gmt-gold);
-                box-shadow: 0 0 12px rgba(212, 175, 55, 0.65);
+                background: radial-gradient(circle at 32% 28%, #fff8cf 0 18%, #ffe27a 34%, var(--gmt-gold) 68%, #a87800 100%);
+                box-shadow: 0 0 5px rgba(255, 244, 174, 0.95), 0 0 15px rgba(212, 175, 55, 0.85), 0 0 28px rgba(212, 175, 55, 0.35);
+                animation: gmt-dot-orbit 5s linear infinite;
             }
 
             .gmt-empty-logo {
+                position: relative;
+                overflow: hidden;
                 width: 70px;
                 height: 70px;
                 margin: 0;
                 border-radius: 23px;
-                border-color: rgba(212, 175, 55, 0.32);
-                background: rgba(17, 46, 72, 0.92);
-                box-shadow: 0 12px 36px rgba(0, 0, 0, 0.24), 0 0 26px rgba(109, 184, 255, 0.12);
+                border: 1px solid rgba(212, 175, 55, 0.48);
+                background: linear-gradient(145deg, rgba(28, 67, 98, 0.98), rgba(8, 27, 45, 0.98));
+                box-shadow: inset 0 0 0 1px rgba(142, 203, 255, 0.12), 0 12px 36px rgba(0, 0, 0, 0.24), 0 0 26px rgba(109, 184, 255, 0.16), 0 0 34px rgba(212, 175, 55, 0.06);
             }
 
-            .gmt-empty-logo img { width: 44px; height: 44px; }
+            .gmt-empty-logo::before {
+                content: "";
+                position: absolute;
+                inset: -45%;
+                background: linear-gradient(112deg, transparent 42%, rgba(255, 248, 207, 0.08) 47%, rgba(255, 238, 154, 0.55) 50%, rgba(255, 248, 207, 0.08) 53%, transparent 58%);
+                transform: translateX(-70%) rotate(10deg);
+                animation: gmt-logo-sheen 6.5s ease-in-out infinite;
+                pointer-events: none;
+            }
+
+            .gmt-empty-logo::after {
+                content: "";
+                position: absolute;
+                inset: 5px;
+                border: 1px solid rgba(212, 175, 55, 0.2);
+                border-radius: 17px;
+                box-shadow: inset 0 0 12px rgba(109, 184, 255, 0.08);
+                pointer-events: none;
+            }
+
+            .gmt-empty-logo img { position: relative; z-index: 1; width: 44px; height: 44px; }
 
             .gmt-identity-kicker {
                 color: #829ab1;
@@ -659,13 +696,16 @@ def inject_global_styles() -> None:
             }
 
             @keyframes gmt-breathe { 0%, 100% { transform: scale(1); opacity: 0.72; } 50% { transform: scale(1.04); opacity: 1; } }
+            @keyframes gmt-ring-sweep { from { transform: rotate(-32deg); } to { transform: rotate(328deg); } }
+            @keyframes gmt-dot-orbit { from { transform: rotate(0deg) translateY(calc(-1 * var(--gmt-orbit-radius))); } to { transform: rotate(360deg) translateY(calc(-1 * var(--gmt-orbit-radius))); } }
+            @keyframes gmt-logo-sheen { 0%, 35% { transform: translateX(-70%) rotate(10deg); opacity: 0; } 48% { opacity: 1; } 62%, 100% { transform: translateX(70%) rotate(10deg); opacity: 0; } }
             @keyframes gmt-drift { from { transform: translate3d(0, 0, 0) rotate(-8deg); } to { transform: translate3d(8px, -5px, 0) rotate(-5deg); } }
             @keyframes gmt-thinking-dot { 0%, 60%, 100% { transform: translateY(0); opacity: 0.35; } 30% { transform: translateY(-3px); opacity: 1; } }
 
             @media (max-width: 600px) {
                 .block-container { padding: 0.5rem 0.85rem 5rem !important; }
                 .gmt-empty-state { margin-top: 0.65rem; }
-                .gmt-identity-orbit { width: 76px; height: 76px; margin-bottom: 0.65rem; }
+                .gmt-identity-orbit { width: 76px; height: 76px; --gmt-orbit-radius: 38px; margin-bottom: 0.65rem; }
                 .gmt-empty-logo { width: 59px; height: 59px; border-radius: 19px; }
                 .gmt-empty-logo img { width: 37px; height: 37px; }
                 .gmt-identity-kicker { font-size: 0.58rem; letter-spacing: 0.12em; }
@@ -684,7 +724,7 @@ def inject_global_styles() -> None:
             @media (min-width: 601px) and (max-height: 760px) {
                 .block-container { padding: 0.2rem 2.4rem 4.5rem !important; }
                 .gmt-empty-state { margin-top: 0.2rem; }
-                .gmt-identity-orbit { width: 68px; height: 68px; margin-bottom: 0.4rem; }
+                .gmt-identity-orbit { width: 68px; height: 68px; --gmt-orbit-radius: 34px; margin-bottom: 0.4rem; }
                 .gmt-empty-logo { width: 54px; height: 54px; border-radius: 18px; }
                 .gmt-empty-logo img { width: 34px; height: 34px; }
                 .gmt-identity-kicker { font-size: 0.55rem; }
@@ -716,20 +756,33 @@ def inject_global_styles() -> None:
             }
 
             .gmt-identity-orbit {
-                width: 72px;
-                height: 72px;
+                width: 80px;
+                height: 80px;
+                --gmt-orbit-radius: 40px;
                 margin-bottom: 0.45rem;
             }
 
             .gmt-empty-logo {
-                width: 58px;
-                height: 58px;
-                border-radius: 18px;
+                width: 66px;
+                height: 66px;
+                border-radius: 21px;
             }
 
             .gmt-empty-logo img {
-                width: 36px;
-                height: 36px;
+                width: 42px;
+                height: 42px;
+            }
+
+            @media (max-width: 600px) {
+                .gmt-identity-orbit { width: 76px; height: 76px; --gmt-orbit-radius: 38px; }
+                .gmt-empty-logo { width: 64px; height: 64px; border-radius: 20px; }
+                .gmt-empty-logo img { width: 40px; height: 40px; }
+            }
+
+            @media (min-width: 601px) and (max-height: 760px) {
+                .gmt-identity-orbit { width: 74px; height: 74px; --gmt-orbit-radius: 37px; }
+                .gmt-empty-logo { width: 62px; height: 62px; border-radius: 20px; }
+                .gmt-empty-logo img { width: 39px; height: 39px; }
             }
 
             .gmt-empty-title {
@@ -1001,6 +1054,10 @@ def inject_background_scene() -> None:
             }}
 
             @media (prefers-reduced-motion: reduce) {{
+                .gmt-orbit-ring,
+                .gmt-orbit-ring::before,
+                .gmt-orbit-ring::after,
+                .gmt-empty-logo::before {{ animation: none !important; }}
                 .gmt-bg-logo,
                 .gmt-bg-orbit,
                 .gmt-bg-orbit-two,
